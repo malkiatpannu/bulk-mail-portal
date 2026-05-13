@@ -6,60 +6,16 @@ The system is designed to manage contacts, create reusable email templates, laun
 
 ---
 
-# Platform Objectives
+# Features
 
-Build a platform that allows administrators to:
+## Contact Management
 
-* Upload and manage contacts
-* Create reusable email templates
-* Create and schedule campaigns
-* Send bulk emails efficiently
-* Handle retries and failures
-* Maintain logs and reporting
-* Support scalable email processing
-
-The architecture focuses on scalability, maintainability, efficient workflows, and production-ready email processing.
-
----
-
-# Tech Stack
-
-* PHP 8.3+
-* Laravel 13
-* MySQL
-* Blade Templates
-* Bootstrap / AdminLTE UI
-* Laravel Queues
-* Eloquent ORM
-* Laravel Mail System
-* Third-party Email Provider Integration
-
----
-
-# Third-Party Services Used
-
-The platform uses external email delivery services instead of building custom mailing infrastructure from scratch.
-
-Recommended integrations:
-
-* Mailgun
-
-The system architecture is designed to support provider abstraction so the mailing service can be changed easily without affecting business logic.
-
----
-
-# Core Features
-
-# Contact Management
-
-Features implemented/planned:
-
-* Upload contacts using CSV/Excel files
-* Store and manage contacts
-* Dynamic fields support
-* Contact listing with pagination
-* Search and filtering
-* Import validation
+- Upload contacts using CSV/Excel files
+- Manage contacts
+- Dynamic fields support
+- Search and filtering
+- Pagination support
+- Import validation
 
 Example dynamic fields:
 
@@ -73,143 +29,105 @@ Example dynamic fields:
 
 ---
 
-# Email Template Management
+## Email Template Management
 
-Administrators can:
+- Create email templates
+- Edit templates
+- Reusable template support
+- Dynamic placeholders
 
-* Create templates
-* Edit templates
-* Store reusable email content
-* Use placeholders dynamically
-
-Supported placeholders:
+Example:
 
 ```html
 Hello {{name}},
 Welcome to {{company}}
 ```
 
-The placeholder system is designed to replace values dynamically during campaign execution.
+---
+
+## Campaign Management
+
+- Create campaigns
+- Attach templates
+- Select recipients
+- Schedule campaigns
+- Immediate sending
+- Campaign status tracking
+
+Supported statuses:
+
+- Draft
+- Scheduled
+- Processing
+- Completed
+- Failed
 
 ---
 
-# Campaign Management
+## Bulk Email Sending
 
-Campaign module supports:
-
-* Create campaigns
-* Attach email templates
-* Select recipients
-* Schedule campaigns
-* Immediate sending
-* Campaign status tracking
-
-Typical statuses:
-
-* Draft
-* Scheduled
-* Processing
-* Completed
-* Failed
+- Queue-based processing
+- Chunked email dispatching
+- Retry handling
+- Failed job tracking
+- Background workers
+- Third-party provider integration
 
 ---
 
-# Bulk Email Sending
+## Logs & Reporting
 
-Bulk mailing architecture includes:
-
-* Queue-based processing
-* Chunked email dispatching
-* Retry handling
-* Failed job tracking
-* Provider abstraction
-* Background workers
-
-The queue system ensures the application remains responsive while processing 10k+ emails.
+- Email delivery logs
+- Failed email logs
+- Campaign history
+- Delivery status tracking
+- Basic reporting
 
 ---
 
-# Queue Architecture
+# Tech Stack
 
-Laravel queues are used to process emails asynchronously.
+- PHP 8.3+
+- Laravel 13
+- MySQL
+- Blade Templates
+- Bootstrap / AdminLTE
+- Laravel Queues
+- Eloquent ORM
+- Laravel Mail System
 
-Example flow:
+---
 
-```text
-Campaign Created
-    ↓
-Jobs Dispatched
-    ↓
-Queue Workers Process Emails
-    ↓
-Provider Sends Emails
-    ↓
-Logs & Status Updated
-```
+# Third-Party Email Provider
+
+The platform uses external email delivery providers for reliable bulk email sending.
+
+Recommended provider:
+
+- Mailgun
+
+Future supported providers:
+
+- Amazon SES
+- SendGrid
+
+The architecture is designed with provider abstraction to allow easy switching between providers.
+
+---
+
+# Queue Processing
+
+Laravel queues are used for asynchronous bulk email processing.
 
 Recommended queue drivers:
 
-* Database
-* Redis
+- Database
+- Redis
 
-Run queue worker:
+Start queue worker:
 
 ```bash
 php artisan queue:work
-```
-
----
-
-# Logs & Reporting
-
-The system maintains:
-
-* Email delivery logs
-* Failed email logs
-* Campaign history
-* Basic reporting
-
-Possible tracked fields:
-
-* Recipient email
-* Delivery status
-* Failure reason
-* Sent timestamp
-
----
-
-# Scalability Considerations
-
-The architecture is designed with scalability in mind.
-
-Implemented/planned considerations:
-
-* Queue-based processing
-* Chunked bulk operations
-* Database indexing
-* Background workers
-* Retry mechanisms
-* Separation of concerns
-* Service-based architecture
-
-The system is intended to handle 10,000+ email deliveries efficiently.
-
----
-
-# Architecture Overview
-
-```text
-Admin Panel
-    ↓
-Campaign Module
-    ↓
-Queue Jobs
-    ↓
-Email Service Layer
-    ↓
-Third-Party Provider
-    ↓
-Logs & Tracking
 ```
 
 ---
@@ -234,8 +152,8 @@ resources/
 │   ├── layouts/
 │   └── templates/
 routes/
-|── web.php
 |── console.php
+└── web.php
 ```
 
 ---
@@ -245,9 +163,11 @@ routes/
 ## 1. Clone Repository
 
 ```bash
-git clone git@github.com:malkiatpannu/bulk-mail-portal.git
-cd bulk-mail-portal
+git clone https://github.com/malkiatpannu/bulk-mail-portal.git
+cd bulk-email-portal
 ```
+
+---
 
 ## 2. Install Dependencies
 
@@ -255,15 +175,19 @@ cd bulk-mail-portal
 composer install
 ```
 
+---
+
 ## 3. Copy Environment File
 
 ```bash
 cp .env.example .env
 ```
 
+---
+
 ## 4. Configure Database
 
-Update `.env` file:
+Update `.env`:
 
 ```env
 DB_CONNECTION=mysql
@@ -276,9 +200,9 @@ DB_PASSWORD=
 
 ---
 
-# Mail Provider Configuration
+## 5. Configure Mail Provider
 
-Example SendGrid configuration:
+Example Mailgun configuration:
 
 ```env
 MAIL_MAILER=mailgun
@@ -296,9 +220,7 @@ MAIL_FROM_NAME="Bulk mail Portal"
 
 ---
 
-# Queue Configuration
-
-Example database queue setup:
+## 6. Configure Queue
 
 ```env
 QUEUE_CONNECTION=database
@@ -311,15 +233,9 @@ php artisan queue:table
 php artisan migrate
 ```
 
-Start queue worker:
-
-```bash
-php artisan queue:work
-```
-
 ---
 
-# Run Migrations
+## 7. Run Migrations
 
 ```bash
 php artisan migrate
@@ -327,7 +243,15 @@ php artisan migrate
 
 ---
 
-# Start Development Server
+## 8. Start Queue Worker
+
+```bash
+php artisan queue:work
+```
+
+---
+
+## 9. Start Development Server
 
 ```bash
 php artisan serve
@@ -341,7 +265,7 @@ http://127.0.0.1:8000
 
 ---
 
-# Important Laravel Commands
+# Useful Commands
 
 ## Clear Cache
 
@@ -349,17 +273,15 @@ http://127.0.0.1:8000
 php artisan optimize:clear
 ```
 
+---
+
 ## Run Queue Worker
 
 ```bash
 php artisan queue:work
 ```
 
-## Retry Failed Jobs
-
-```bash
-php artisan queue:retry all
-```
+---
 
 ## View Failed Jobs
 
@@ -369,24 +291,55 @@ php artisan queue:failed
 
 ---
 
+## Retry Failed Jobs
+
+```bash
+php artisan queue:retry all
+```
+
+---
+
+# Scalability Considerations
+
+The application is designed to support high-volume email processing using:
+
+- Queue-based architecture
+- Chunked processing
+- Background workers
+- Retry mechanisms
+- Provider abstraction
+- Modular architecture
+
+The platform is intended to handle 10,000+ email deliveries efficiently.
+
+---
+
 # Future Enhancements
 
-Potential future improvements:
+- Advanced analytics dashboard
+- Open/click tracking
+- Webhook handling
+- Multi-provider failover
+- Role & permission management
+- API support
+- Real-time campaign progress
+- Redis queue optimization
+- Template builder UI
 
-* Advanced analytics dashboard
-* Open/click tracking
-* Webhook handling
-* Multi-provider failover
-* Role & permission management
-* API support
-* Real-time campaign progress
-* Redis queue optimization
-* Template builder UI
+---
+
+# Architecture Documentation
+
+Detailed architecture and workflow documentation is available in:
+
+```bash
+ARCHITECTURE.md
+```
 
 ---
 
 # Conclusion
 
-This project demonstrates full-stack Laravel development skills along with architectural thinking required for scalable applications.
+This platform is designed using modern Laravel development practices with focus on scalability, maintainability, and efficient bulk email processing.
 
-The solution is designed around real-world bulk email processing workflows and follows modern Laravel development standards.
+The architecture supports large-scale email campaigns using queue-based processing and third-party email delivery services.
