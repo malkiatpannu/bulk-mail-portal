@@ -1,58 +1,392 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Bulk Email Management Portal
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A scalable bulk email management platform built with Laravel 13.
 
-## About Laravel
+The system is designed to manage contacts, create reusable email templates, launch bulk email campaigns, and process large-scale email delivery using queue-based architecture and third-party email providers.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# Platform Objectives
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Build a platform that allows administrators to:
 
-## Learning Laravel
+* Upload and manage contacts
+* Create reusable email templates
+* Create and schedule campaigns
+* Send bulk emails efficiently
+* Handle retries and failures
+* Maintain logs and reporting
+* Support scalable email processing
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+The architecture focuses on scalability, maintainability, efficient workflows, and production-ready email processing.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+# Tech Stack
 
-## Agentic Development
+* PHP 8.3+
+* Laravel 13
+* MySQL
+* Blade Templates
+* Bootstrap / AdminLTE UI
+* Laravel Queues
+* Eloquent ORM
+* Laravel Mail System
+* Third-party Email Provider Integration
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
 
-```bash
-composer require laravel/boost --dev
+# Third-Party Services Used
 
-php artisan boost:install
+The platform uses external email delivery services instead of building custom mailing infrastructure from scratch.
+
+Recommended integrations:
+
+* Mailgun
+
+The system architecture is designed to support provider abstraction so the mailing service can be changed easily without affecting business logic.
+
+---
+
+# Core Features
+
+# Contact Management
+
+Features implemented/planned:
+
+* Upload contacts using CSV/Excel files
+* Store and manage contacts
+* Dynamic fields support
+* Contact listing with pagination
+* Search and filtering
+* Import validation
+
+Example dynamic fields:
+
+```json
+{
+    "name": "John Doe",
+    "company": "ABC Ltd",
+    "city": "Delhi"
+}
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+# Email Template Management
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Administrators can:
 
-## Code of Conduct
+* Create templates
+* Edit templates
+* Store reusable email content
+* Use placeholders dynamically
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Supported placeholders:
 
-## Security Vulnerabilities
+```html
+Hello {{name}},
+Welcome to {{company}}
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The placeholder system is designed to replace values dynamically during campaign execution.
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Campaign Management
+
+Campaign module supports:
+
+* Create campaigns
+* Attach email templates
+* Select recipients
+* Schedule campaigns
+* Immediate sending
+* Campaign status tracking
+
+Typical statuses:
+
+* Draft
+* Scheduled
+* Processing
+* Completed
+* Failed
+
+---
+
+# Bulk Email Sending
+
+Bulk mailing architecture includes:
+
+* Queue-based processing
+* Chunked email dispatching
+* Retry handling
+* Failed job tracking
+* Provider abstraction
+* Background workers
+
+The queue system ensures the application remains responsive while processing 10k+ emails.
+
+---
+
+# Queue Architecture
+
+Laravel queues are used to process emails asynchronously.
+
+Example flow:
+
+```text
+Campaign Created
+    ↓
+Jobs Dispatched
+    ↓
+Queue Workers Process Emails
+    ↓
+Provider Sends Emails
+    ↓
+Logs & Status Updated
+```
+
+Recommended queue drivers:
+
+* Database
+* Redis
+
+Run queue worker:
+
+```bash
+php artisan queue:work
+```
+
+---
+
+# Logs & Reporting
+
+The system maintains:
+
+* Email delivery logs
+* Failed email logs
+* Campaign history
+* Basic reporting
+
+Possible tracked fields:
+
+* Recipient email
+* Delivery status
+* Failure reason
+* Sent timestamp
+
+---
+
+# Scalability Considerations
+
+The architecture is designed with scalability in mind.
+
+Implemented/planned considerations:
+
+* Queue-based processing
+* Chunked bulk operations
+* Database indexing
+* Background workers
+* Retry mechanisms
+* Separation of concerns
+* Service-based architecture
+
+The system is intended to handle 10,000+ email deliveries efficiently.
+
+---
+
+# Architecture Overview
+
+```text
+Admin Panel
+    ↓
+Campaign Module
+    ↓
+Queue Jobs
+    ↓
+Email Service Layer
+    ↓
+Third-Party Provider
+    ↓
+Logs & Tracking
+```
+
+---
+
+# Project Structure
+
+```bash
+app/
+├── Http/
+│   ├── Controllers/
+│   ├── Requests/
+├── Imports/
+├── Jobs/
+├── Mail/
+├── Models/
+├── Services/
+resources/
+├── views/
+│   ├── campaigns/
+│   ├── contacts/
+|   ├── emails/
+│   ├── layouts/
+│   └── templates/
+routes/
+|── web.php
+|── console.php
+```
+
+---
+
+# Installation
+
+## 1. Clone Repository
+
+```bash
+git clone git@github.com:malkiatpannu/bulk-mail-portal.git
+cd bulk-mail-portal
+```
+
+## 2. Install Dependencies
+
+```bash
+composer install
+```
+
+## 3. Copy Environment File
+
+```bash
+cp .env.example .env
+```
+
+## 4. Configure Database
+
+Update `.env` file:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=bulk_email_portal
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+---
+
+# Mail Provider Configuration
+
+Example SendGrid configuration:
+
+```env
+MAIL_MAILER=mailgun
+MAIL_SCHEME=https
+MAIL_HOST=default
+MAIL_PORT=587
+
+MAILGUN_ENDPOINT=https://api.mailgun.net
+MAILGUN_DOMAIN=<mailgun-domain>
+MAILGUN_SECRET=<mailgun-api-key>
+
+MAIL_FROM_ADDRESS=no-reply@example.com
+MAIL_FROM_NAME="Bulk mail Portal"
+```
+
+---
+
+# Queue Configuration
+
+Example database queue setup:
+
+```env
+QUEUE_CONNECTION=database
+```
+
+Generate queue tables:
+
+```bash
+php artisan queue:table
+php artisan migrate
+```
+
+Start queue worker:
+
+```bash
+php artisan queue:work
+```
+
+---
+
+# Run Migrations
+
+```bash
+php artisan migrate
+```
+
+---
+
+# Start Development Server
+
+```bash
+php artisan serve
+```
+
+Application URL:
+
+```bash
+http://127.0.0.1:8000
+```
+
+---
+
+# Important Laravel Commands
+
+## Clear Cache
+
+```bash
+php artisan optimize:clear
+```
+
+## Run Queue Worker
+
+```bash
+php artisan queue:work
+```
+
+## Retry Failed Jobs
+
+```bash
+php artisan queue:retry all
+```
+
+## View Failed Jobs
+
+```bash
+php artisan queue:failed
+```
+
+---
+
+# Future Enhancements
+
+Potential future improvements:
+
+* Advanced analytics dashboard
+* Open/click tracking
+* Webhook handling
+* Multi-provider failover
+* Role & permission management
+* API support
+* Real-time campaign progress
+* Redis queue optimization
+* Template builder UI
+
+---
+
+# Conclusion
+
+This project demonstrates full-stack Laravel development skills along with architectural thinking required for scalable applications.
+
+The solution is designed around real-world bulk email processing workflows and follows modern Laravel development standards.
